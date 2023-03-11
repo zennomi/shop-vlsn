@@ -450,27 +450,4 @@ class ProductController extends BaseAdminController
         $reviewIds = inputPost('review_ids');
         $this->commonModel->deleteSelectedReviews($reviewIds);
     }
-
-    /**
-     * Get Product By Purchase Code
-     */
-
-    public function getProductByPurchaseCode($purchase_code)
-    {
-        $sale = $this->productModel->getDigitalSaleByPurchaseCode($purchase_code);
-        if (!empty($sale)) {
-            $product = $this->productModel->getProduct($sale->product_id);
-            $fieldModel = new FieldModel();
-            $customFields = $fieldModel->getCustomFieldsByCategory($product->category_id);
-            foreach ($customFields as $customField) {
-                $customFields["value"] = getCustomFieldProductValues($customField, $product->id, selectedLangId());
-            }
-            $product->customFields = $customFields;
-            $data = [
-                'result' => 1,
-                'product' => $product,
-            ];
-            echo json_encode($data);
-        }
-    }
 }

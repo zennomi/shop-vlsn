@@ -86,7 +86,6 @@ $routes->get($rtAdmin . '/product-details/(:num)', 'ProductController::productDe
 $routes->get($rtAdmin . '/featured-products', 'ProductController::featuredProducts');
 $routes->get($rtAdmin . '/featured-products-transactions', 'ProductController::featuredProductsTransactions');
 $routes->get($rtAdmin . '/featured-products-pricing', 'ProductController::featuredProductsPricing');
-$routes->get('/get-product-by-purchase-code/(:any)', 'ProductController::getProductByPurchaseCode/$1');
 
 //bidding
 $routes->get($rtAdmin . '/quote-requests', 'ProductController::quoteRequests');

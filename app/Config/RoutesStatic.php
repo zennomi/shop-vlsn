@@ -13,6 +13,7 @@ $routes->get('connect-with-facebook', 'AuthController::connectWithFacebook');
 $routes->get('facebook-callback', 'AuthController::facebookCallback');
 $routes->get('connect-with-google', 'AuthController::connectWithGoogle');
 $routes->get('connect-with-vk', 'AuthController::connectWithVk');
+$routes->get('get-product-by-purchase-code/(:any)', 'HomeController::getProductByPurchaseCode/$1');
 
 /*
  * --------------------------------------------------------------------
