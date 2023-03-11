@@ -774,6 +774,11 @@ class ProductModel extends BaseModel
         return $this->builderDigitalSales->where('buyer_id', clrNum($buyerId))->where('product_id', clrNum($productId))->where('order_id', clrNum($orderId))->get()->getRow();
     }
 
+    public function getDigitalSaleByPurchaseCode($purchaseCode)
+    {
+        return $this->builderDigitalSales->where('purchase_code', cleanStr($purchaseCode))->get()->getRow();
+    }
+
     //get product by id
     public function getProduct($id)
     {

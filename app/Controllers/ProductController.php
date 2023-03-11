@@ -6,6 +6,7 @@ use App\Models\BiddingModel;
 use App\Models\ProductAdminModel;
 use App\Models\ProductModel;
 use App\Models\PromoteModel;
+use App\Models\FieldModel;
 
 class ProductController extends BaseAdminController
 {
@@ -44,7 +45,7 @@ class ProductController extends BaseAdminController
         } else {
             $data = ['title' => trans("products"), 'listType' => 'products', 'view' => 'products', 'list' => 'all'];
         }
-        
+
         $numRows = $this->productAdminModel->getFilteredProductCount($data['listType']);
         $pager = paginate($this->perPage, $numRows);
         $data['products'] = $this->productAdminModel->getFilteredProductsPaginated($this->perPage, $pager->offset, $data['listType']);
@@ -64,7 +65,7 @@ class ProductController extends BaseAdminController
         $numRows = $this->productAdminModel->getFilteredProductCount($data['listType']);
         $pager = paginate($this->perPage, $numRows);
         $data['products'] = $this->productAdminModel->getFilteredProductsPaginated($this->perPage, $pager->offset, $data['listType']);
-        
+
         echo view('admin/includes/_header', $data);
         echo view('admin/product/featured_products', $data);
         echo view('admin/includes/_footer');
@@ -108,7 +109,7 @@ class ProductController extends BaseAdminController
         $numRows = $model->getTransactionsCount(null);
         $pager = paginate($this->perPage, $numRows);
         $data['transactions'] = $model->getTransactionsPaginated(null, $this->perPage, $pager->offset);
-        
+
         echo view('admin/includes/_header', $data);
         echo view('admin/product/featured_products_transactions', $data);
         echo view('admin/includes/_footer');
@@ -145,7 +146,7 @@ class ProductController extends BaseAdminController
         $data['video'] = $this->fileModel->getProductVideo($data['product']->id);
         $data['audio'] = $this->fileModel->getProductAudio($data['product']->id);
         $data['digitalFile'] = $this->fileModel->getProductDigitalFile($data['product']->id);
-        
+
         echo view('admin/includes/_header', $data);
         echo view('admin/product/product_details', $data);
         echo view('admin/includes/_footer');
@@ -296,7 +297,7 @@ class ProductController extends BaseAdminController
     {
         checkPermission('quote_requests');
         $data['title'] = trans("quote_requests");
-        
+
         $model = new BiddingModel();
         $numRows = $model->getQuoteRequestCountAdmin();
         $pager = paginate($this->perPage, $numRows);
@@ -335,7 +336,7 @@ class ProductController extends BaseAdminController
         $numRows = $this->commonModel->getCommentCount(1);
         $pager = paginate($this->perPage, $numRows);
         $data['comments'] = $this->commonModel->getCommentsPaginated(1, $this->perPage, $pager->offset);
-        
+
         echo view('admin/includes/_header', $data);
         echo view('admin/comment/comments', $data);
         echo view('admin/includes/_footer');
@@ -351,7 +352,7 @@ class ProductController extends BaseAdminController
         $data['topButtonText'] = trans("approved_comments");
         $data['topButtonUrl'] = adminUrl('product-comments');
         $data['showApproveButton'] = true;
-        
+
         $numRows = $this->commonModel->getCommentCount(0);
         $pager = paginate($this->perPage, $numRows);
         $data['comments'] = $this->commonModel->getCommentsPaginated(0, $this->perPage, $pager->offset);
@@ -448,5 +449,28 @@ class ProductController extends BaseAdminController
         checkPermission('reviews');
         $reviewIds = inputPost('review_ids');
         $this->commonModel->deleteSelectedReviews($reviewIds);
+    }
+
+    /**
+     * Get Product By Purchase Code
+     */
+
+    public function getProductByPurchaseCode($purchase_code)
+    {
+        $sale = $this->productModel->getDigitalSaleByPurchaseCode($purchase_code);
+        if (!empty($sale)) {
+            $product = $this->productModel->getProduct($sale->product_id);
+            $fieldModel = new FieldModel();
+            $customFields = $fieldModel->getCustomFieldsByCategory($product->category_id);
+            foreach ($customFields as $customField) {
+                $customFields["value"] = getCustomFieldProductValues($customField, $product->id, selectedLangId());
+            }
+            $product->customFields = $customFields;
+            $data = [
+                'result' => 1,
+                'product' => $product,
+            ];
+            echo json_encode($data);
+        }
     }
 }
