@@ -1129,7 +1129,7 @@ class HomeController extends BaseController
              $fieldModel = new FieldModel();
              $customFields = $fieldModel->getCustomFieldsByCategory($product->category_id);
              foreach ($customFields as $customField) {
-                 $customFields["value"] = getCustomFieldProductValues($customField, $product->id, selectedLangId());
+                 $customField->value = getCustomFieldProductValues($customField, $product->id, selectedLangId());
              }
              $product->customFields = $customFields;
              $data = [

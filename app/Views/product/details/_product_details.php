@@ -19,8 +19,21 @@
                 if (!empty($digitalSale)): ?>
                     <div class="row-custom m-t-10">
                         <form action="<?= base_url('download-purchased-digital-file-post'); ?>" method="post">
+                            <?= csrf_field(); ?>
                             <input type="hidden" name="sale_id" value="<?= $digitalSale->id; ?>">
-                            <button class="btn btn-instant-download"><i class="icon-download-solid"></i><?= trans("download") ?></button>
+                            <?php if ($product->listing_type == 'license_key'): ?>
+                                <button name="submit" value="license_certificate" class="btn btn-instant-download"><i class="icon-download-solid"></i><?= trans("download_license_key"); ?></button>
+                            <?php else: ?>
+                                <div class="btn-group btn-group-download">
+                                    <button type="button" class="btn btn-instant-download dropdown-toggle" data-toggle="dropdown">
+                                        <i class="icon-download-solid"></i><?= trans("download"); ?>&nbsp;&nbsp;</i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <button name="submit" value="main_files" class="dropdown-item"><?= trans("main_files"); ?></button>
+                                        <button name="submit" value="license_certificate" class="dropdown-item"><?= trans("license_certificate"); ?></button>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                         </form>
                     </div>
                 <?php else: ?>
