@@ -669,13 +669,6 @@ class CartModel extends BaseModel
                 }
                 return false;
             }
-            if ($coupon->coupon_count <= $coupon->used_coupon_count) {
-                $this->removeCoupon();
-                if ($setMessage) {
-                    $this->session->setFlashdata('error_coupon_code', trans("msg_coupon_limit"));
-                }
-                return false;
-            }
             if ($coupon->usage_type == 'single') {
                 if (!authCheck()) {
                     $this->removeCoupon();
@@ -703,11 +696,10 @@ class CartModel extends BaseModel
                 }
             }
             $minAmount = getPrice($coupon->minimum_order_amount, 'decimal');
-            $minAmount = priceDecimal($minAmount, $cartTotal->currency, true, false);
             if ($sellerCartTotal < $minAmount) {
                 $this->removeCoupon();
                 if ($setMessage) {
-                    $this->session->setFlashdata('error_coupon_code', trans("msg_coupon_cart_total") . " " . priceCurrencyFormat($minAmount, $cartTotal->currency));
+                    $this->session->setFlashdata('error_coupon_code', trans("msg_coupon_cart_total") . " " . priceCurrencyFormat(priceDecimal($minAmount, $cartTotal->currency, true, false), $cartTotal->currency));
                 }
                 return false;
             }
