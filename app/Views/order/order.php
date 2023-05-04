@@ -229,6 +229,8 @@
                                             foreach ($orderProducts as $item):
                                                 if ($item->product_type == 'physical') {
                                                     $isOrderHasPhysicalProduct = true;
+                                                } elseif ($item->product_type == 'digital') {
+                                                    $digitalSale = getDigitalSaleByOrderId($item->buyer_id, $item->product_id, $item->order_id);
                                                 } ?>
                                                 <tr>
                                                     <td style="width: 50%">
@@ -261,6 +263,10 @@
                                                                 <?php else: ?>
                                                                     <div class="m-b-5"><span class="span-product-dtl-table"><?= trans("total"); ?>:</span><?= priceFormatted($item->product_total_price, $item->product_currency); ?></div>
                                                                 <?php endif; ?>
+                                                                <div>
+                                                                    <b>Mã kích hoạt:</b> <br>
+                                                                    <pre><?= $digitalSale->purchase_code; ?></pre>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </td>
@@ -278,7 +284,6 @@
                                                             <small class="text-confirm-order-table"><?= trans("confirm_order_received_exp"); ?></small>
                                                         <?php elseif ($item->order_status == 'completed'):
                                                             if ($item->product_type == 'digital'):
-                                                                $digitalSale = getDigitalSaleByOrderId($item->buyer_id, $item->product_id, $item->order_id);
                                                                 if (!empty($digitalSale)):
                                                                     if ($item->listing_type == 'license_key'):?>
                                                                         <div class="row-custom">
